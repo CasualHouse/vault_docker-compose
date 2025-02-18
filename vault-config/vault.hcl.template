@@ -1,0 +1,14 @@
+storage "postgresql" {
+  connection_url = "postgres://${VAULT_POSTGRES_USER}:${VAULT_POSTGRES_PASSWORD}@postgres:5432/${VAULT_POSTGRES_DB}?sslmode=disable"
+}
+
+disable_mlock = ${DISABLE_MLOCK}
+
+api_addr = "${VAULT_API_ADDR}"
+
+listener "tcp" {
+  address = "${VAULT_ADDR}"
+  tls_disable = ${TLS_DISABLE}
+}
+
+ui = ${UI_ENABLED}

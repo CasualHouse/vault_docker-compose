@@ -1,0 +1,45 @@
+version: '3.8'
+
+services:
+  vault:
+    build: .
+    container_name: vault
+    environment:
+      - VAULT_ADDR=${VAULT_ADDR}
+      - VAULT_API_ADDR=${VAULT_API_ADDR}
+      - VAULT_POSTGRES_USER=${VAULT_POSTGRES_USER}
+      - VAULT_POSTGRES_PASSWORD=${VAULT_POSTGRES_PASSWORD}
+      - VAULT_POSTGRES_DB=${VAULT_POSTGRES_DB}
+      - TLS_DISABLE=${TLS_DISABLE}
+      - UI_ENABLED=${UI_ENABLED}
+      - DISABLE_MLOCK=${DISABLE_MLOCK}
+    ports:
+      - "127.0.0.1:8200:8200"
+    volumes:
+      - vault-data:/vault/file
+    restart: always
+    cap_add:
+      - IPC_LOCK
+    networks:
+      - vault-net
+
+  postgres:
+    image: postgres:latest
+    container_name: postgres
+    environment:
+      - POSTGRES_USER=${VAULT_POSTGRES_USER}
+      - POSTGRES_PASSWORD=${VAULT_POSTGRES_PASSWORD}
+      - POSTGRES_DB=${VAULT_POSTGRES_DB}
+    volumes:
+      - postgres-data:/var/lib/postgresql/data
+    restart: always
+    networks:
+      - vault-net
+
+networks:
+  vault-net:
+    driver: bridge
+
+volumes:
+  vault-data:
+  postgres-data:
